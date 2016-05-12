@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     // Calculate total time and print it to console
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds> 
                             (std::chrono::steady_clock::now() - start);
-    std::cout << "time: " << duration.count() << std::endl;
+    std::cout << "sequential: " << n << " " << duration.count() << std::endl;
 
     // Write Floyd result to file
     std::fstream result_writer(argv[2], std::fstream::out | std::fstream::binary);

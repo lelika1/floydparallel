@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     // Calculate total duration and print to console
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds> 
                             (std::chrono::steady_clock::now() - start);
-    std::cout << "time: " << duration.count() << std::endl;
+    std::cout << "open_mp: " << n << " " << duration.count() << std::endl;
 
     // Write results to file
     std::fstream result_writer(argv[2], std::fstream::out | std::fstream::binary);

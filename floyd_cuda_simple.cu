@@ -6,6 +6,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+__global__ void WakeGpuKernel(int reps) 
+{
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= reps) return;
+}
+
 // Calculate one element of matrix per thread
 __global__ void FloydSimple(uint32_t *graph, uint32_t *result, uint32_t n, int k) {
     const int i = blockIdx.y * blockDim.y + threadIdx.y;
@@ -37,6 +43,12 @@ __host__ int main(int argc, char **argv) {
         h_graph[i] = current_elem;
     }
 
+    // Run empty task on cuda - it will decrease time of first run
+    int threadNum = std::min(n, uint32_t(32));
+    dim3 blockSize(threadNum, threadNum, 1);
+    dim3 gridSize(n / threadNum + 1, n / threadNum + 1, 1);
+    WakeGpuKernel<<<1, blockSize>>>(32);
+
     // Copy graph to device global memory
     auto start = std::chrono::steady_clock::now();
 
@@ -48,10 +60,6 @@ __host__ int main(int argc, char **argv) {
     cudaEventCreate(&iterationFinishedEvent);
 
     // Start Floyd algorithm on cuda
-    int threadNum = std::min(n, uint32_t(32));
-    dim3 blockSize(threadNum, threadNum, 1);
-    dim3 gridSize(n / threadNum + 1, n / threadNum + 1, 1);
-
     for (size_t k = 0; k < n; ++k) {
         std::swap(d_graph, d_floyd_result);
         // Start all threads for one iteration
@@ -66,7 +74,7 @@ __host__ int main(int argc, char **argv) {
     // Calculate all time used by cuda, and print it to console
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds> 
                             (std::chrono::steady_clock::now() - start);
-    std::cout << "time: " << duration.count() << std::endl;
+    std::cout << "cuda_simple: " << n << " " << duration.count() << std::endl;
 
     // Write Floyd results to file
     std::fstream result_writer(argv[2], std::fstream::out | std::fstream::binary);
