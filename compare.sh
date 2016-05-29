@@ -2,7 +2,8 @@
 
 set -eufx -o pipefail
 
+echo "$1"
 ./gen $1 input
-./fs input output
-./fseq input output_seq
-diff output output_seq
+./fcudas input output
+./fblocked input output_blocked
+diff output output_blocked

@@ -6,6 +6,15 @@ FILES=./inputs/*
 # for f in $FILES
 # do
 #   echo "$f"
+#   ./fblocked "$f" "output" >> results/blocked_time.txt
+#   ./fblocked "$f" "output" >> results/blocked_time.txt
+#   ./fblocked "$f" "output" >> results/blocked_time.txt
+# done
+
+# echo "cuda"
+# for f in $FILES
+# do
+#   echo "$f"
 #   ./fcudas "$f" "output" >> results/cuda_time.txt
 #   ./fcudas "$f" "output" >> results/cuda_time.txt
 #   ./fcudas "$f" "output" >> results/cuda_time.txt
