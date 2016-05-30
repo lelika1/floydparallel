@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-FILES=./inputs/*
+# FILES=./inputs/*
 
-# echo "cuda"
+# echo "cuda_blocked"
+# echo "v time" >> results/blocked_time.txt
 # for f in $FILES
 # do
 #   echo "$f"
@@ -12,6 +13,7 @@ FILES=./inputs/*
 # done
 
 # echo "cuda"
+# echo "v time" >> results/blocked_time.txt
 # for f in $FILES
 # do
 #   echo "$f"
@@ -21,6 +23,7 @@ FILES=./inputs/*
 # done
 
 # echo "open_mp"
+# echo "v time" >> results/blocked_time.txt
 # for f in $FILES
 # do
 #   echo "$f"
@@ -30,6 +33,7 @@ FILES=./inputs/*
 # done
 
 # echo "seq"
+# echo "v time" >> results/blocked_time.txt
 # for f in $FILES
 # do
 #   echo "$f"

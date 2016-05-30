@@ -244,7 +244,7 @@ __host__ void FloydBlocked(uint32_t *h_graph,
     // Calculate all time used by cuda, and print it to console
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds> 
                             (std::chrono::steady_clock::now() - start);
-    std::cout << "cuda_blocked: " << n << " " << duration.count() << std::endl;
+    std::cout << n << " " << duration.count() << std::endl;
 
     cudaFree(d_graph);
 }
@@ -258,7 +258,7 @@ __host__ int main(int argc, char **argv) {
 
     // Read vertex count and all graph
     uint32_t n;
-    std::cout << "Warning: Now tile size will be 32." << std::endl;
+    // std::cout << "Warning: Now tile size will be 32." << std::endl;
 
     std::fstream graph_reader(argv[1], std::fstream::in | std::fstream::binary);
     graph_reader.read((char*)&n, 4);
