@@ -8,3 +8,4 @@ g++ -fopenmp --std=c++11  floyd_mp.cpp -o ./fmp
 nvcc --std=c++11  floyd_cuda_simple.cu -o ./fcudas
 nvcc --std=c++11  floyd_cuda_blocked.cu -o ./fblocked
 nvcc --std=c++11  floyd_cuda_blocked_reg.cu -o ./freg
+nvcc --std=c++11  floyd_blocked_staged.cu -o ./fstaged
