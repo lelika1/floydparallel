@@ -85,22 +85,6 @@ __global__ void CalculateLeadRowAndColumn(uint32_t *graph, uint32_t n,
     __shared__ uint32_t curBlock[TILE_SIZE * TILE_SIZE];
 
     size_t leadBlockOffset = blockedIter * TILE_SIZE;
-    
-    // if (locI * TILE_SIZE + locJ >= TILE_SIZE * TILE_SIZE) {
-    //     printf("+\n");
-    // }
-    // if ((leadBlockOffset + locI) * n + leadBlockOffset + locJ >= n * n) {
-    //     printf("!\n");
-    // }
-    // if (glI * n + glJ >= n * n) {
-    //     printf("@\n");
-    // }
-    // if (glI >= n) {
-    //     printf("@\n");
-    // }
-    // if (glJ >= n) {
-    //     printf("!\n");
-    // }
     leadBlock[locI * TILE_SIZE + locJ] = graph[(leadBlockOffset + locI) * n 
                                                 + leadBlockOffset + locJ];
     curBlock[locI * TILE_SIZE + locJ] = graph[glI * n + glJ];
@@ -111,12 +95,6 @@ __global__ void CalculateLeadRowAndColumn(uint32_t *graph, uint32_t n,
         // This is lead row
         #pragma unroll
         for (size_t locIter = 0; locIter < TILE_SIZE; ++locIter) {
-            // if ((locIter * TILE_SIZE + locJ >= TILE_SIZE * TILE_SIZE)
-            //     || (locI * TILE_SIZE + locIter >= TILE_SIZE * TILE_SIZE))
-            // {
-            //     printf("1\n");
-            // }
-
             uint32_t newPathLen = curBlock[locIter * TILE_SIZE + locJ]
                                   + leadBlock[locI * TILE_SIZE + locIter];
             if (newPathLen < curBlock[locI * TILE_SIZE + locJ]) {
@@ -128,11 +106,6 @@ __global__ void CalculateLeadRowAndColumn(uint32_t *graph, uint32_t n,
         // This is lead column
         #pragma unroll
         for (size_t locIter = 0; locIter < TILE_SIZE; ++locIter) {
-            // if ((locIter * TILE_SIZE + locJ >= TILE_SIZE * TILE_SIZE)
-            //     || (locI * TILE_SIZE + locIter >= TILE_SIZE * TILE_SIZE))
-            // {
-            //     printf("2\n");
-            // }
             uint32_t newPathLen = curBlock[locI * TILE_SIZE + locIter]
                                   + leadBlock[locIter * TILE_SIZE + locJ];
             if (newPathLen < curBlock[locI * TILE_SIZE + locJ]) {
@@ -212,7 +185,6 @@ __host__ void FloydBlocked(uint32_t *h_graph,
     cudaEvent_t stepFinishedEvent;
     cudaEventCreate(&stepFinishedEvent);
     for (int blockedIteration = 0; blockedIteration < n / TILE_SIZE; ++blockedIteration) {
-        // printf("iteration %d\n", blockedIteration);
         CalculateLeadBlock<<<firstStepGridSize, firstStepBlockSize>>>
                           (d_graph, n, blockedIteration);
         cudaStatus = cudaGetLastError();
@@ -258,8 +230,6 @@ __host__ int main(int argc, char **argv) {
 
     // Read vertex count and all graph
     uint32_t n;
-    // std::cout << "Warning: Now tile size will be 32." << std::endl;
-
     std::fstream graph_reader(argv[1], std::fstream::in | std::fstream::binary);
     graph_reader.read((char*)&n, 4);
     if (n % TILE_SIZE != 0) {
