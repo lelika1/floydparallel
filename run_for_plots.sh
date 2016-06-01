@@ -2,6 +2,16 @@
 
 # FILES=./inputs/*
 
+# echo "cuda_req"
+# echo "v time" >> results/blocked_req_time.txt
+# for f in $FILES
+# do
+#   echo "$f"
+#   ./freg "$f" "output" >> results/blocked_req_time.txt
+#   ./freg "$f" "output" >> results/blocked_req_time.txt
+#   ./freg "$f" "output" >> results/blocked_req_time.txt
+# done
+
 # echo "cuda_blocked"
 # echo "v time" >> results/blocked_time.txt
 # for f in $FILES
