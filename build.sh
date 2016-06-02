@@ -9,3 +9,4 @@ nvcc --std=c++11  floyd_cuda_simple.cu -o ./fcudas
 nvcc --std=c++11  floyd_cuda_blocked.cu -o ./fblocked
 nvcc --std=c++11  floyd_cuda_blocked_reg.cu -o ./freg
 nvcc --std=c++11  floyd_blocked_staged.cu -o ./fstaged
+nvcc --std=c++11  floyd_modified.cu -o ./fmodifieds
