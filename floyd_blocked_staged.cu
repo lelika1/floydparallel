@@ -130,42 +130,6 @@ __global__ void CalculateLeadRowAndColumn(uint32_t *graph, uint32_t n,
             }
         }
     }
-
-
-    //     __shared__ uint32_t leadBlock[TILE_SIZE * TILE_SIZE];
-    // __shared__ uint32_t curBlock[TILE_SIZE * TILE_SIZE];
-
-    // size_t leadBlockOffset = blockedIter * TILE_SIZE;
-
-    // leadBlock[locI * TILE_SIZE + locJ] = graph[(leadBlockOffset + locI) * n 
-    //                                             + leadBlockOffset + locJ];
-    // curBlock[locI * TILE_SIZE + locJ] = graph[glI * n + glJ];
-    // __syncthreads();
-
-
-    // if (blockIdx.y == 0) {
-    //     // This is lead row
-    //     #pragma unroll
-    //     for (size_t locIter = 0; locIter < TILE_SIZE; ++locIter) {
-    //         uint32_t newPathLen = curBlock[locIter * TILE_SIZE + locJ]
-    //                               + leadBlock[locI * TILE_SIZE + locIter];
-    //         if (newPathLen < curBlock[locI * TILE_SIZE + locJ]) {
-    //             curBlock[locI * TILE_SIZE + locJ] = newPathLen;
-    //         }
-    //         __syncthreads();
-    //     }
-    // } else {
-    //     // This is lead column
-    //     #pragma unroll
-    //     for (size_t locIter = 0; locIter < TILE_SIZE; ++locIter) {
-    //         uint32_t newPathLen = curBlock[locI * TILE_SIZE + locIter]
-    //                               + leadBlock[locIter * TILE_SIZE + locJ];
-    //         if (newPathLen < curBlock[locI * TILE_SIZE + locJ]) {
-    //             curBlock[locI * TILE_SIZE + locJ] = newPathLen;
-    //         }
-    //         __syncthreads();
-    //     }
-    // }
     graph[glI * n + glJ] = curBlock[locI * TILE_SIZE + locJ];
 }
 
