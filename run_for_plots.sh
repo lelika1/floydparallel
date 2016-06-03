@@ -2,15 +2,25 @@
 
 FILES=./inputs/*
 
-echo "cuda_staged"
-echo "v time" >> results/blocked_staged_time.txt
-for f in $FILES
-do
-  echo "$f"
-  ./fstaged "$f" "output" >> results/blocked_staged_time.txt
-  ./fstaged "$f" "output" >> results/blocked_staged_time.txt
-  ./fstaged "$f" "output" >> results/blocked_staged_time.txt
-done
+# echo "cuda_modified"
+# echo "v time" >> results/blocked_modified_time.txt
+# for f in $FILES
+# do
+#   echo "$f"
+#   ./fmodified "$f" "output" >> results/blocked_modified_time.txt
+#   ./fmodified "$f" "output" >> results/blocked_modified_time.txt
+#   ./fmodified "$f" "output" >> results/blocked_modified_time.txt
+# done
+
+# echo "cuda_staged"
+# echo "v time" >> results/blocked_staged_time.txt
+# for f in $FILES
+# do
+#   echo "$f"
+#   ./fstaged "$f" "output" >> results/blocked_staged_time.txt
+#   ./fstaged "$f" "output" >> results/blocked_staged_time.txt
+#   ./fstaged "$f" "output" >> results/blocked_staged_time.txt
+# done
 
 # echo "cuda_req"
 # echo "v time" >> results/blocked_req_time.txt
