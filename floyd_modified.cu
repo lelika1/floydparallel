@@ -193,8 +193,7 @@ __global__ void CalculateKIterRestLeadBlocks(uint32_t *graph, uint32_t n,
 __global__ void CalculateK1IterLeadBlock(uint32_t *graph, uint32_t n,
                                          uint32_t blockedIter)
 {
-    __shared__ uint32_t leadRow[TILE_SIZE * STAGE_SIZE];
-    __shared__ uint32_t leadCol[TILE_SIZE * TILE_SIZE];
+    __shared__ uint32_t sharedMatrix[TILE_SIZE * TILE_SIZE];
     uint32_t curBlockElem;
 
     int blockPosI = (blockedIter + 1) * TILE_SIZE;
@@ -219,16 +218,16 @@ __global__ void CalculateK1IterLeadBlock(uint32_t *graph, uint32_t n,
     for (int stage = 0; stage < TILE_SIZE / STAGE_SIZE; ++stage) {
         size_t leadBlocksOffset = blockedIter * TILE_SIZE;
         if (locI / STAGE_SIZE == stage) {
-            leadRow[(locI % STAGE_SIZE)  * TILE_SIZE + locJ] = 
+            sharedMatrix [(locI % STAGE_SIZE)  * TILE_SIZE + locJ] = 
                 graph[(leadBlocksOffset + locI) * n + (blockPosJ + locJ)];
-            leadCol[locJ * STAGE_SIZE + (locI % STAGE_SIZE)] =
+            sharedMatrix[TILE_SIZE * STAGE_SIZE + locJ * STAGE_SIZE + (locI % STAGE_SIZE)] =
                 graph[(blockPosI + locJ) * n + (leadBlocksOffset + locI)];
         }
         __syncthreads();
         #pragma unroll
         for (int locIter = 0; locIter < STAGE_SIZE; ++locIter) {
-            uint32_t newPathLen = leadCol[locI * STAGE_SIZE + locIter]
-                                  + leadRow[locIter * TILE_SIZE + locJ];
+            uint32_t newPathLen = sharedMatrix[TILE_SIZE * STAGE_SIZE + locI * STAGE_SIZE + locIter]
+                                  + sharedMatrix [locIter * TILE_SIZE + locJ];
             if (newPathLen < curBlockElem) {
                 curBlockElem = newPathLen;
             }
@@ -237,19 +236,19 @@ __global__ void CalculateK1IterLeadBlock(uint32_t *graph, uint32_t n,
     }
 
     // Now leadCol will be used as leadBlock
-    leadCol[locI * TILE_SIZE + locJ] = curBlockElem;
+    sharedMatrix[locI * TILE_SIZE + locJ] = curBlockElem;
     __syncthreads();
 
     #pragma unroll
     for (size_t locIter = 0; locIter < TILE_SIZE; ++locIter) {
-        uint32_t newPathLen = leadCol[locI * TILE_SIZE + locIter]
-                              + leadCol[locIter * TILE_SIZE + locJ];
-        if (newPathLen < leadCol[locI * TILE_SIZE + locJ]) {
-            leadCol[locI * TILE_SIZE + locJ] = newPathLen;
+        uint32_t newPathLen = sharedMatrix[locI * TILE_SIZE + locIter]
+                              + sharedMatrix[locIter * TILE_SIZE + locJ];
+        if (newPathLen < sharedMatrix[locI * TILE_SIZE + locJ]) {
+            sharedMatrix[locI * TILE_SIZE + locJ] = newPathLen;
         }
         __syncthreads();
     }
-    graph[glI * n + glJ] = leadCol[locI * TILE_SIZE + locJ];
+    graph[glI * n + glJ] = sharedMatrix[locI * TILE_SIZE + locJ];
 }
 
 __global__ void CalculateK1IterRowAndColumn(uint32_t *graph, uint32_t n,
